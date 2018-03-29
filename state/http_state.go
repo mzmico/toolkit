@@ -5,14 +5,20 @@ import (
 
 	"github.com/cstockton/go-conv"
 	"github.com/gin-gonic/gin"
+	"github.com/mzmico/mz"
 	"github.com/mzmico/protobuf"
 	"github.com/mzmico/toolkit/errors"
 )
 
 type HttpState struct {
-	c       *gin.Context
-	session *protobuf.Session
-	err     error
+	State
+	c     *gin.Context
+	appId string
+	err   error
+}
+
+func (m *HttpState) AppID() string {
+	return m.appId
 }
 
 func (m *HttpState) parseSession() {
@@ -94,11 +100,14 @@ func (m *HttpState) GetLastError() error {
 	return m.err
 }
 
-func NewHttpState(c *gin.Context) *HttpState {
+func NewHttpState(service *mz.HttpService, c *gin.Context) *HttpState {
 
 	state := &HttpState{
-		c:       c,
-		session: &protobuf.Session{},
+		State: State{
+			service: service,
+			session: &protobuf.Session{},
+		},
+		c: c,
 	}
 	state.parseSession()
 	return state
@@ -126,27 +135,4 @@ func (m *HttpState) JSON(v interface{}) {
 			"data":    v,
 		},
 	)
-}
-
-func GinHandler(cb func(state *HttpState)) func(context *gin.Context) {
-
-	return func(context *gin.Context) {
-
-		state := NewHttpState(context)
-
-		if state.GetLastError() != nil {
-			context.JSON(
-				http.StatusOK,
-				map[string]interface{}{
-					"code":    int(protobuf.State_ArgumentError),
-					"message": protobuf.State_ArgumentError,
-				},
-			)
-		}
-
-		cb(state)
-
-		return
-
-	}
 }
