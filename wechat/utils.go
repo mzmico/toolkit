@@ -68,7 +68,7 @@ func GET(addr string, v interface{}) error {
 			}
 
 			return errors.New(
-				"wechat call remote method %ସ fail, code=%d,message=%s",
+				"wechat call remote method %s fail, code=%d,message=%s",
 				u.Path,
 				value.GetErrorCode(),
 				value.GetErrorMessage(),

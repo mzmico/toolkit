@@ -1,6 +1,8 @@
 package balance
 
 import (
+	"log"
+
 	"github.com/mzmico/toolkit/errors"
 	"github.com/spf13/viper"
 	"google.golang.org/grpc"
@@ -31,6 +33,8 @@ func NewDNSBalance(v *viper.Viper) (*DNSBalance, error) {
 	for name, addr := range address {
 
 		conn, err := grpc.Dial(addr, grpc.WithInsecure())
+
+		log.Printf("[balance]load service %s -> %s.", name, addr)
 
 		if err != nil {
 			return nil, errors.By(err)

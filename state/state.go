@@ -12,5 +12,5 @@ type State struct {
 }
 
 func (m *State) Rpc(endpoint string) *grpc.ClientConn {
-	return nil
+	return m.service.Rpc(endpoint)
 }

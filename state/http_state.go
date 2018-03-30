@@ -8,6 +8,7 @@ import (
 	"github.com/mzmico/mz"
 	"github.com/mzmico/protobuf"
 	"github.com/mzmico/toolkit/errors"
+	"github.com/sirupsen/logrus"
 )
 
 type HttpState struct {
@@ -15,6 +16,30 @@ type HttpState struct {
 	c     *gin.Context
 	appId string
 	err   error
+}
+
+type ErrorMessages map[int]string
+
+var (
+	errorMessages = make(ErrorMessages)
+)
+
+func SetErrorMessages(m ErrorMessages) {
+
+	for idx, msg := range m {
+		errorMessages[idx] = msg
+	}
+}
+
+func GetErrorMessage(idx int) string {
+
+	val, ok := errorMessages[idx]
+
+	if !ok {
+		return "未定义错误"
+	}
+
+	return val
 }
 
 func (m *HttpState) AppID() string {
@@ -113,13 +138,14 @@ func NewHttpState(service *mz.HttpService, c *gin.Context) *HttpState {
 	return state
 }
 
-func (m *HttpState) Error(code int, message string, err error) {
+func (m *HttpState) Error(code int, err error) {
 
+	logrus.Error(err)
 	m.c.JSON(
 		http.StatusOK,
 		map[string]interface{}{
 			"code":    code,
-			"message": message,
+			"message": GetErrorMessage(code),
 			"data":    map[string]interface{}{},
 		},
 	)
@@ -131,8 +157,24 @@ func (m *HttpState) JSON(v interface{}) {
 		http.StatusOK,
 		map[string]interface{}{
 			"code":    0,
-			"message": "success",
+			"message": "请求成功",
 			"data":    v,
 		},
 	)
+}
+
+func (m *HttpState) Bind(v interface{}) bool {
+
+	err := m.c.ShouldBindJSON(v)
+
+	if err != nil {
+		m.Error(
+			1000,
+			err,
+		)
+
+		return false
+	}
+
+	return true
 }

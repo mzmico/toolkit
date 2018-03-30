@@ -6,7 +6,7 @@ type IError interface {
 }
 
 type Error struct {
-	ErrorCode    int64  `json:"code"`
+	ErrorCode    int64  `json:"errcode"`
 	ErrorMessage string `json:"errmsg"`
 }
 

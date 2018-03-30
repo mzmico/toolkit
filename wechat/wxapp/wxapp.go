@@ -12,9 +12,10 @@ type Config struct {
 }
 
 type Session struct {
-	OpenID     string `json:"open_id"`
+	wechat.Error
+	OpenID     string `json:"openid"`
 	SessionKey string `json:"session_key"`
-	UnionID    string `json:"union_id"`
+	UnionID    string `json:"unionid"`
 }
 
 var (

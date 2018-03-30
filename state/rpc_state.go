@@ -100,7 +100,7 @@ func (m *RpcState) Error(err error) error {
 
 	m.logger.Error(e)
 
-	return e
+	return err
 }
 func (m *RpcState) LogErrorln(args ...interface{}) {
 	m.logger.Errorln(args...)

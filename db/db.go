@@ -30,15 +30,15 @@ func Use(name string) *sqlx.DB {
 }
 func Load() (*sqlx.DB, error) {
 
-	db, err := sqlx.Connect("mysql", "user:password@localhost/db_user")
-
-	db.SetMaxOpenConns(5)
-	db.SetMaxIdleConns(5)
-	db.SetConnMaxLifetime(3 * time.Hour)
+	db, err := sqlx.Connect("mysql", "root:123456@tcp(127.0.0.1:3306)/db_user")
 
 	if err != nil {
 		return db, errors.By(err)
 	}
+
+	db.SetMaxOpenConns(5)
+	db.SetMaxIdleConns(5)
+	db.SetConnMaxLifetime(3 * time.Hour)
 
 	return db, nil
 }
