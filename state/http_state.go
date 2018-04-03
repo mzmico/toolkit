@@ -13,9 +13,8 @@ import (
 
 type HttpState struct {
 	State
-	c     *gin.Context
-	appId string
-	err   error
+	c   *gin.Context
+	err error
 }
 
 type ErrorMessages map[int]string
@@ -40,10 +39,6 @@ func GetErrorMessage(idx int) string {
 	}
 
 	return val
-}
-
-func (m *HttpState) AppID() string {
-	return m.appId
 }
 
 func (m *HttpState) parseSession() {
